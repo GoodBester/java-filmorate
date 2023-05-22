@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 public abstract class Validator {
 
     protected void ex(String message) throws ValidationException {
-        log.warn("Получена ошибка с сообщением: {}" ,message);
+        log.warn("Получена ошибка с сообщением: {}", message);
         throw new ValidationException(message);
     }
 

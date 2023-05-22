@@ -105,6 +105,4 @@ class UserValidatorTest {
                 });
         assertEquals("Валидация не пройдена по дню рождения", exception1.getMessage());
     }
-
-
 }

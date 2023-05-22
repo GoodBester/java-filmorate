@@ -36,8 +36,6 @@ class FilmValidatorTest {
         //Граница даты
         Film film4 = Film.builder().name("null").description("s").duration(9).releaseDate(LocalDate.of(1895, 12, 28)).build();
         assertTrue(validator.checkValid(film4));
-
-
     }
 
     @Test

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class User{
+public class User {
     private int id;
     private String name;
     @Email
