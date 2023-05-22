@@ -10,5 +10,4 @@ public abstract class Validator {
         log.warn("Получена ошибка с сообщением: {}", message);
         throw new ValidationException(message);
     }
-
 }

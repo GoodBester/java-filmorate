@@ -14,5 +14,4 @@ public class FilmValidator extends Validator {
         if (film.getDuration() < 0) ex("Валидация не пройдена по продолжительности");
         return true;
     }
-
 }

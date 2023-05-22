@@ -113,6 +113,4 @@ class FilmValidatorTest {
                 });
         assertEquals("Валидация не пройдена по Дате выпуска", exception1.getMessage());
     }
-
-
 }
