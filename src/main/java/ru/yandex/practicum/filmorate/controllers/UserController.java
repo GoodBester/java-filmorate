@@ -12,15 +12,15 @@ import java.util.*;
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-    private final Map<Integer ,User> users;
+    private final Map<Integer, User> users;
     private final UserValidator validator;
     private int id;
-    public UserController(){
+
+    public UserController() {
         this.validator = new UserValidator();
         this.users = new HashMap<>();
         this.id = 1;
     }
-
 
 
     @GetMapping

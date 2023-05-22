@@ -16,7 +16,8 @@ public class FilmController {
     private final Map<Integer, Film> films;
     private final FilmValidator validator;
     public int id;
-    public FilmController(){
+
+    public FilmController() {
         this.validator = new FilmValidator();
         this.films = new HashMap<>();
         this.id = 1;
