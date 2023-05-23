@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class FilmValidator extends Validator {
 
-    public boolean checkValid(Film film) throws ValidationException {
+    public static boolean checkValid(Film film) throws ValidationException {
         if (film.getName() == null || film.getName().isBlank()) ex("Валидация не пройдена по имени");
         if (film.getDescription().length() > 200) ex("Валидация не пройдена по описанию");
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) ex("Валидация не пройдена по Дате выпуска");

@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 @Slf4j
 public abstract class Validator {
 
-    protected void ex(String message) throws ValidationException {
+    protected static void ex(String message) throws ValidationException {
         log.warn("Получена ошибка с сообщением: {}", message);
         throw new ValidationException(message);
     }

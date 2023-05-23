@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public class UserValidator extends Validator {
 
-    public boolean checkValid(User user) throws ValidationException {
+    public static boolean checkValid(User user) throws ValidationException {
         if (user.getEmail() == null || user.getEmail().isBlank() || !(user.getEmail().contains("@")))
             ex("Валидация не пройдена по имейлу");
         if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" "))

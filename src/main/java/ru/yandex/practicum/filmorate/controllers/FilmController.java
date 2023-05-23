@@ -5,23 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.validators.FilmValidator;
 
 import java.util.*;
+
+import static ru.yandex.practicum.filmorate.validators.FilmValidator.*;
 
 @RestController
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    private final Map<Integer, Film> films;
-    private final FilmValidator validator;
-    public int id;
+    private final Map<Integer, Film> films = new HashMap<>();
+    public int id = 1;
 
-    public FilmController() {
-        this.validator = new FilmValidator();
-        this.films = new HashMap<>();
-        this.id = 1;
-    }
 
     @GetMapping
     public List<Film> getFilms() {
@@ -31,7 +26,7 @@ public class FilmController {
 
     @PostMapping
     public Film addFilm(@RequestBody @Valid Film film) throws ValidationException {
-        if (validator.checkValid(film)) {
+        if (checkValid(film)) {
             film.setId(id++);
             films.put(film.getId(), film);
             log.info("Добавлен новый фильм");
@@ -41,7 +36,7 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@RequestBody @Valid Film film) throws ValidationException {
-        if (validator.checkValid(film)) {
+        if (checkValid(film)) {
             if (films.containsKey(film.getId())) {
                 films.put(film.getId(), film);
                 log.info("Фильм обновлен");
