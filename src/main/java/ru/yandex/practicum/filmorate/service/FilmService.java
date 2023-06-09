@@ -77,8 +77,8 @@ public class FilmService {
             likesFilms.put(film.getId(), film.getLikedId().size());
         }
         List<Film> popularFilms = new ArrayList<>();
-        likesFilms.entrySet().stream().sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed()).
-                limit(number).forEach(entry -> popularFilms.add(filmStorage.getFilmsMap().get(entry.getKey())));
+        likesFilms.entrySet().stream().sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
+                .limit(number).forEach(entry -> popularFilms.add(filmStorage.getFilmsMap().get(entry.getKey())));
 
         return popularFilms;
     }
