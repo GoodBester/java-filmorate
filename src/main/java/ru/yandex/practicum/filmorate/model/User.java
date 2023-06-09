@@ -17,7 +17,7 @@ public class User {
     private int id;
     private String name;
     @NotNull
-    private final Set<Integer> friends = new HashSet<>();
+    private final Set<Integer> friendsId = new HashSet<>();
     @Email
     private final String email;
     @NotNull

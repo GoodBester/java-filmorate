@@ -6,12 +6,9 @@ import ru.yandex.practicum.filmorate.model.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static ru.yandex.practicum.filmorate.service.Servicing.checkId;
+import static ru.yandex.practicum.filmorate.service.ValidationUtils.checkId;
 import static ru.yandex.practicum.filmorate.validators.UserValidator.checkValid;
 
 @Component
@@ -28,10 +25,10 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(String id) throws NotFoundException {
-        User user = users.get(checkId(id));
-        if (user == null) throw new NotFoundException("Такого юзера не существует");
-        return user;
+        return Optional.ofNullable(users.get(checkId(id))).orElseThrow(() -> new NotFoundException("Такого юзера нет"));
+
     }
+
 
     @Override
     public Map<Integer, User> getUsersMap() {

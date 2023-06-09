@@ -16,7 +16,7 @@ public class Film {
     @NotBlank
     private final String name;
     @NotNull
-    private final Set<Integer> likes = new HashSet<>();
+    private final Set<Integer> likedId = new HashSet<>();
     private String description;
     private final LocalDate releaseDate;
     @Min(0)
