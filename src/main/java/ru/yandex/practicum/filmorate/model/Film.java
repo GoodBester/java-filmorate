@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -21,4 +22,7 @@ public class Film {
     private final LocalDate releaseDate;
     @Min(0)
     private final int duration;
+    private List<String> genre;
+    private final String rating;
+
 }
