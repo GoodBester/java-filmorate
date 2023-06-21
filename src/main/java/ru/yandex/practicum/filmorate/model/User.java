@@ -8,12 +8,16 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
 public class User {
     private int id;
     private String name;
+    @NotNull
+    private final Set<Integer> friendsId = new HashSet<>();
     @Email
     private final String email;
     @NotNull

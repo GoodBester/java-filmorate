@@ -1,46 +1,64 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.model.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.*;
 
-import static ru.yandex.practicum.filmorate.validators.UserValidator.*;
 
 @RestController
 @RequestMapping("/users")
-@Slf4j
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private int id = 1;
+    private final UserService userService;
 
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+
+    }
 
     @GetMapping
     public List<User> getUsers() {
-        return new ArrayList<>(users.values());
+        return userService.getUsers();
+    }
+
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable String id) throws NotFoundException {
+        return userService.getUser(id);
     }
 
 
     @PostMapping
     public User addUser(@RequestBody User user) throws ValidationException {
-        if (checkValid(user)) {
-            user.setId(id++);
-            users.put(user.getId(), user);
-            log.info("Добавлен новый юзер");
-        }
-        return user;
+        return userService.addUser(user);
     }
 
     @PutMapping
     public User updateUser(@RequestBody User user) throws ValidationException {
-        if (checkValid(user) && users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-            log.info("Обновлен новый юзер");
-            return user;
-        }
+        return userService.updateUser(user);
+    }
 
-        throw new ValidationException("Такого фильма нет в базе");
+    @PutMapping("/{id}/friends/{friendId}")
+    public String addFriend(@PathVariable String id, @PathVariable String friendId) throws ValidationException, NotFoundException {
+        return userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public String deleteFriend(@PathVariable String id, @PathVariable String friendId) throws ValidationException, NotFoundException {
+        return userService.deleteFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable String id) throws ValidationException, NotFoundException {
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{friendId}")
+    public List<User> getCommonFriends(@PathVariable String id, @PathVariable String friendId) throws ValidationException, NotFoundException {
+        return userService.getCommonFriends(id, friendId);
     }
 }
