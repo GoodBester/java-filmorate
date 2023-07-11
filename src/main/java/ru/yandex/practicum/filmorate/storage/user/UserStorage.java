@@ -8,13 +8,23 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserStorage {
-    List<User> getUsers();
+    List<User> getUsers() throws NotFoundException;
 
     User addUser(User user) throws ValidationException;
 
-    User updateUser(User user) throws ValidationException;
+    User updateUser(User user) throws ValidationException, NotFoundException;
 
-    User getUser(String id) throws NotFoundException;
+    User getUser(String id) throws NotFoundException, ValidationException;
 
     Map<Integer, User> getUsersMap();
+
+    String addFriend(String id, String friendId) throws ValidationException, NotFoundException;
+
+    String deleteFriend(String id, String friendId) throws ValidationException, NotFoundException;
+
+    List<User> getFriends(String id) throws ValidationException, NotFoundException;
+
+    List<User> getCommonFriends(String id, String friendId) throws ValidationException, NotFoundException;
+
+
 }

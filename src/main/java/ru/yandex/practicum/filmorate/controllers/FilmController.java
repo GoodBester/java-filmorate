@@ -23,8 +23,8 @@ public class FilmController {
 
 
     @GetMapping
-    public List<Film> getFilms() {
-        return filmService.getFilms();
+    public List<Film> getAllFilms() throws NotFoundException {
+        return filmService.getAllFilms();
     }
 
     @GetMapping("/{id}")
@@ -34,12 +34,12 @@ public class FilmController {
 
 
     @PostMapping
-    public Film addFilm(@RequestBody @Valid Film film) throws ValidationException {
+    public Film addFilm(@RequestBody @Valid Film film) throws ValidationException, NotFoundException {
         return filmService.addFilm(film);
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody @Valid Film film) throws ValidationException {
+    public Film updateFilm(@RequestBody @Valid Film film) throws ValidationException, NotFoundException {
         return filmService.updateFilm(film);
     }
 
@@ -48,13 +48,14 @@ public class FilmController {
         return filmService.addLike(id, userId);
     }
 
+
     @DeleteMapping("/{id}/like/{userId}")
     public String removeLike(@PathVariable String id, @PathVariable String userId) throws ValidationException, NotFoundException {
         return filmService.removeLike(id, userId);
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") String count) {
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") String count) throws NotFoundException {
         return filmService.getPopularFilms(count);
     }
 }
