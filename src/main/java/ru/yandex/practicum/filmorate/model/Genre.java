@@ -8,7 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class Genre implements Comparable<Genre> {
     private int id;
-    private String Name;
+    private String name;
 
     @Override
     public int compareTo(Genre o) {
