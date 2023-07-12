@@ -5,7 +5,6 @@ import ru.yandex.practicum.filmorate.model.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UserStorage {
     List<User> getUsers() throws NotFoundException;
@@ -15,8 +14,6 @@ public interface UserStorage {
     User updateUser(User user) throws ValidationException, NotFoundException;
 
     User getUser(String id) throws NotFoundException, ValidationException;
-
-    Map<Integer, User> getUsersMap();
 
     String addFriend(String id, String friendId) throws ValidationException, NotFoundException;
 

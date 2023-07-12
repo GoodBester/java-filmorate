@@ -65,11 +65,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         throw new ValidationException("Такого фильма нет в базе");
     }
 
-    @Override
-    public Map<Integer, Film> getFilmsMap() {
-        return films;
-    }
-
     public String addLike(String filmId, String id) throws ValidationException, NotFoundException {
         User user = checkUser(id, userStorage);
         Film film = checkFilm(filmId, this);
@@ -79,7 +74,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (film == null) {
             throw new NotFoundException("Такого фильма нет");
         }
-//        film.getLikedId().add(user.getId());
+        film.setLikes(film.getLikes() + 1);
         return String.format("Пользователь %s поставил лайк фильму %s",
                 user.getName(), film.getName());
     }
@@ -93,7 +88,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (film == null) {
             throw new NotFoundException("Такого фильма нет");
         }
-//        film.getLikedId().remove(user.getId());
+        film.setLikes(film.getLikes() - 1);
         return String.format("Пользователь %s убрал лайк фильму %s",
                 user.getName(), film.getName());
     }
@@ -119,12 +114,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getPopularFilms(String count) {
+    public List<Film> getPopularFilms(String count) throws NotFoundException {
         int number = checkId(count);
         Map<Integer, Integer> likesFilms = new HashMap<>();
-//        for (Film film : films.values()) {
-//            likesFilms.put(film.getId(), film.getLikedId().size());
-//        }
+        for (Film film : films.values()) {
+            likesFilms.put(film.getId(), film.getLikes());
+        }
         List<Film> popularFilms = new ArrayList<>();
         likesFilms.entrySet().stream().sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
                 .limit(number).forEach(entry -> popularFilms.add(this.getFilms().get(entry.getKey())));

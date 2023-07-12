@@ -76,11 +76,6 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Map<Integer, User> getUsersMap() {
-        return null;
-    }
-
-    @Override
     public String addFriend(String id, String friendId) throws ValidationException, NotFoundException {
         User user = getUser(id);
         User friend = getUser(friendId);
@@ -121,7 +116,6 @@ public class UserDbStorage implements UserStorage {
     public List<User> getFriends(String id) throws NotFoundException {
         User user = getUser(id);
         List<User> u;
-//        checkValid(user);
         try {
             u = jdbcTemplate.queryForObject("SELECT u.id, u.name, u.email, u.login, u.birthday, f.friend," +
                     " f.STATUS FROM USER u left JOIN FRIENDS f ON u.ID = f.friend  WHERE f.user=? ORDER BY u.id;", listUserRowMapper(), user.getId());

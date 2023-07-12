@@ -227,7 +227,7 @@ class FilmorateApplicationTests {
         final NotFoundException exception = assertThrows(
                 NotFoundException.class,
                 () -> filmStorage.getFilm("999999"));
-        assertEquals("Фильм не найден", exception.getMessage());
+        assertEquals("Такого фильма нет", exception.getMessage());
     }
 
     @Test

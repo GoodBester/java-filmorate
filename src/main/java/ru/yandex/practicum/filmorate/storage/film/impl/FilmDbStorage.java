@@ -57,16 +57,18 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilm(String id) throws NotFoundException {
-        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.RATING_ID" +
-                " rating_id, r.NAME rating_name, COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id " +
-                "genre_id FROM FILM as f LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES" +
-                " fl ON f.ID = fl.FILM_ID LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID" +
+        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.RATING_ID rating_id, r.NAME rating_name," +
+                " COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id genre_id FROM FILM as f " +
+                "LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID" +
+                " LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID" +
                 " where f.id = ? GROUP BY f.id, g.NAME ORDER BY genre_id;";
-        List<Film> f = jdbcTemplate.query(sql, filmRowMapper(), ValidationUtils.checkId(id));
-        if (f.size() == 0) {
-            throw new NotFoundException("Фильм не найден");
+        Film f;
+        try {
+            f = jdbcTemplate.queryForObject(sql, filmRowMapper(), ValidationUtils.checkId(id));
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("Такого фильма нет");
         }
-        return f.get(0);
+        return f;
     }
 
     @Override
@@ -76,7 +78,6 @@ public class FilmDbStorage implements FilmStorage {
         log.info("Добавлен новый фильм");
         insertInFilmGenre(film);
         return film;
-
     }
 
     @Override
@@ -93,15 +94,15 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getPopularFilms(String count) {
-        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, r.ID rating_id," +
-                " r.NAME rating_name, COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id genre_id FROM FILM as f " +
+        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, r.ID rating_id, r.NAME rating_name," +
+                " COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id genre_id FROM FILM as f " +
                 "LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID" +
                 " LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID" +
                 "  GROUP BY f.id, g.NAME, g.id ORDER BY likes DESC LIMIT ?";
         List<Film> f;
         try {
             f = jdbcTemplate.queryForObject(sql, allFilmRowMapper(), ValidationUtils.checkId(count));
-        } catch (EmptyResultDataAccessException | NullPointerException e) {
+        } catch (EmptyResultDataAccessException | NullPointerException | NotFoundException e) {
             return List.of();
         }
         return Objects.requireNonNull(f).stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
@@ -188,12 +189,6 @@ public class FilmDbStorage implements FilmStorage {
             return new ArrayList<>(films.values());
         };
     }
-
-    @Override
-    public Map<Integer, Film> getFilmsMap() {
-        return null;
-    }
-
 
     @Override
     public List<Genre> getAllGenres() throws NotFoundException {

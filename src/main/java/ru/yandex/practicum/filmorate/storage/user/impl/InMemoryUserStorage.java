@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.*;
 
 import static ru.yandex.practicum.filmorate.service.ValidationUtils.checkId;
+import static ru.yandex.practicum.filmorate.service.ValidationUtils.checkUser;
 import static ru.yandex.practicum.filmorate.validators.UserValidator.checkValid;
 
 @Component
@@ -27,33 +28,69 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User getUser(String id) throws NotFoundException {
         return Optional.ofNullable(users.get(checkId(id))).orElseThrow(() -> new NotFoundException("Такого юзера нет"));
-
-    }
-
-
-    @Override
-    public Map<Integer, User> getUsersMap() {
-        return users;
     }
 
     @Override
-    public String addFriend(String id, String friendId) {
-        return null;
+    public String addFriend(String id, String friendId) throws ValidationException, NotFoundException {
+        User user = checkUser(id, this);
+        User friend = checkUser(friendId, this);
+        if (user == null) {
+            throw new NotFoundException("Такого юзера нет");
+        }
+        if (friend == null) {
+            throw new NotFoundException("Такого друга нет");
+        }
+        user.getFriendsId().add(friend.getId());
+        friend.getFriendsId().add(user.getId());
+        return String.format("Теперь %s друзья с %s",
+                user.getName(), friend.getName());
     }
 
     @Override
-    public String deleteFriend(String id, String friendId) {
-        return null;
+    public String deleteFriend(String id, String friendId) throws ValidationException, NotFoundException {
+        User user = checkUser(id, this);
+        User friend = checkUser(friendId, this);
+        if (user == null) {
+            throw new NotFoundException("Такого юзера нет");
+        }
+        if (friend == null) {
+            throw new NotFoundException("Такого друга нет");
+        }
+        user.getFriendsId().remove(friend.getId());
+        friend.getFriendsId().remove(user.getId());
+        return String.format("Теперь %s больше не друзья с %s",
+                user.getName(), friend.getName());
     }
 
     @Override
-    public List<User> getFriends(String id) {
-        return null;
+    public List<User> getFriends(String id) throws NotFoundException, ValidationException {
+        User user = checkUser(id, this);
+        if (user == null) {
+            throw new NotFoundException("Такого юзера нет");
+        }
+        List<User> list = new ArrayList<>();
+        for (Integer i : user.getFriendsId())
+            list.add(getUser(String.valueOf(i)));
+        return list;
     }
 
     @Override
-    public List<User> getCommonFriends(String id, String friendId) {
-        return null;
+    public List<User> getCommonFriends(String id, String friendId) throws ValidationException, NotFoundException {
+        User user = checkUser(id, this);
+        User friend = checkUser(friendId, this);
+        if (user == null) {
+            throw new NotFoundException("Такого юзера нет");
+        }
+        if (friend == null) {
+            throw new NotFoundException("Такого друга нет");
+        }
+        List<User> list = new ArrayList<>();
+        for (Integer i : user.getFriendsId()) {
+            if (friend.getFriendsId().contains(i)) {
+                list.add(getUser(String.valueOf(i)));
+            }
+        }
+        return list;
     }
 
 
