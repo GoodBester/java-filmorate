@@ -67,12 +67,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUser(String id) throws NotFoundException {
-        List<User> u = jdbcTemplate.query("SELECT u.id, u.name, u.email, u.login, u.birthday, f.friend, f.STATUS FROM USER u " +
-                "left JOIN FRIENDS f ON u.ID = f.USER WHERE u.id = ?;", userRowMapper(), ValidationUtils.checkId(id));
-        if (u.size() == 0) {
-            throw new NotFoundException("User not found");
+        User u;
+        try {
+            u = jdbcTemplate.queryForObject("SELECT u.id, u.name, u.email, u.login, u.birthday, f.friend, f.STATUS FROM USER u " +
+                    "left JOIN FRIENDS f ON u.ID = f.USER WHERE u.id = ?;", userRowMapper(), ValidationUtils.checkId(id));
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("Такого фильма нет");
         }
-        return u.get(0);
+        return u;
     }
 
     @Override
