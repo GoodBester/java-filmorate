@@ -72,7 +72,7 @@ public class UserDbStorage implements UserStorage {
             u = jdbcTemplate.queryForObject("SELECT u.id, u.name, u.email, u.login, u.birthday, f.friend, f.STATUS FROM USER u " +
                     "left JOIN FRIENDS f ON u.ID = f.USER WHERE u.id = ?;", userRowMapper(), ValidationUtils.checkId(id));
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("Такого фильма нет");
+            throw new NotFoundException("User not found");
         }
         return u;
     }
