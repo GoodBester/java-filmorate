@@ -41,8 +41,8 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> getAllFilms() {
         String select = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.rating_id rating_id," +
                 " r.NAME rating_name, COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id genre_id FROM FILM as f ";
-        String joinRating = "LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID" ;
-        String joinFilmGenre = " LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID ";
+        String joinRating = "LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID ";
+        String joinFilmGenre = "LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID ";
         String condition = "GROUP BY f.id, g.NAME, g.id ORDER BY f.ID";
         List<Film> f;
         try {
