@@ -22,15 +22,14 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getUsers() {
+    public List<User> getUsers() throws NotFoundException {
         return userService.getUsers();
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable String id) throws NotFoundException {
+    public User getUser(@PathVariable int id) throws NotFoundException, ValidationException {
         return userService.getUser(id);
     }
-
 
     @PostMapping
     public User addUser(@RequestBody User user) throws ValidationException {
@@ -38,27 +37,27 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) throws ValidationException {
+    public User updateUser(@RequestBody User user) throws ValidationException, NotFoundException {
         return userService.updateUser(user);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public String addFriend(@PathVariable String id, @PathVariable String friendId) throws ValidationException, NotFoundException {
+    public String addFriend(@PathVariable int id, @PathVariable int friendId) throws ValidationException, NotFoundException {
         return userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public String deleteFriend(@PathVariable String id, @PathVariable String friendId) throws ValidationException, NotFoundException {
+    public String deleteFriend(@PathVariable int id, @PathVariable int friendId) throws ValidationException, NotFoundException {
         return userService.deleteFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriends(@PathVariable String id) throws ValidationException, NotFoundException {
+    public List<User> getFriends(@PathVariable int id) throws ValidationException, NotFoundException {
         return userService.getFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{friendId}")
-    public List<User> getCommonFriends(@PathVariable String id, @PathVariable String friendId) throws ValidationException, NotFoundException {
+    public List<User> getCommonFriends(@PathVariable int id, @PathVariable int friendId) throws ValidationException, NotFoundException {
         return userService.getCommonFriends(id, friendId);
     }
 }
