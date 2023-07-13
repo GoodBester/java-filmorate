@@ -143,7 +143,7 @@ public class UserDbStorage implements UserStorage {
         String condition = "WHERE u.ID IN(SELECT r.friend fr FROM (SELECT f.friend rrr, f2.friend FROM friends f ";
         String joinFriends2 = "LEFT JOIN friends f2 ON f.friend = f2.FRIEND WHERE f.USER = ? AND f2.USER = ? AND f.FRIEND = f2.FRIEND)  AS r) ORDER BY u.id;";
         try {
-            u = jdbcTemplate.queryForObject(select + joinFriends + condition +joinFriends2, listUserRowMapper(), user.getId(), friend.getId());
+            u = jdbcTemplate.queryForObject(select + joinFriends + condition + joinFriends2, listUserRowMapper(), user.getId(), friend.getId());
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
