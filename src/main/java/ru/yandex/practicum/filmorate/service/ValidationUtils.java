@@ -12,39 +12,27 @@ import static ru.yandex.practicum.filmorate.validators.UserValidator.checkValid;
 
 public class ValidationUtils {
 
-    public static User checkUser(String idStr, UserStorage userStorage) throws ValidationException, NotFoundException {
+    public static User checkUser(int id, UserStorage userStorage) throws ValidationException, NotFoundException {
         User user;
-        int id = checkId(idStr);
-        if (!userStorage.getUsers().contains(userStorage.getUser(idStr))) {
+        if (!userStorage.getUsers().contains(userStorage.getUser(id))) {
             return null;
         }
-        user = userStorage.getUser(idStr);
+        user = userStorage.getUser(id);
         if (checkValid(user)) {
             return user;
         }
         return null;
     }
 
-    public static Film checkFilm(String idStr, FilmStorage filmStorage) throws ValidationException, NotFoundException {
+    public static Film checkFilm(int id, FilmStorage filmStorage) throws ValidationException, NotFoundException {
         Film film;
-        int id = checkId(idStr);
-        if (!filmStorage.getAllFilms().contains(filmStorage.getFilm(idStr))) {
+        if (!filmStorage.getAllFilms().contains(filmStorage.getFilm(id))) {
             return null;
         }
-        film = filmStorage.getFilm(idStr);
+        film = filmStorage.getFilm(id);
         if (FilmValidator.checkValid(film)) {
             return film;
         }
         return null;
-    }
-
-    public static int checkId(String id) throws NotFoundException {
-        int idInt;
-        try {
-            idInt = Integer.parseInt(id);
-        } catch (Throwable e) {
-            throw new NotFoundException("Некоректное значение параметра");
-        }
-        return idInt;
     }
 }

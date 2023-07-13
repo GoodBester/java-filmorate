@@ -39,7 +39,7 @@ class FilmorateApplicationTests {
         user1.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.addUser(user1);
 
-        Optional<User> userOptional = Optional.ofNullable(userStorage.getUser(String.valueOf(1)));
+        Optional<User> userOptional = Optional.ofNullable(userStorage.getUser(1));
         assertThat(userOptional)
                 .isPresent()
                 .hasValueSatisfying(user ->
@@ -48,7 +48,7 @@ class FilmorateApplicationTests {
 
         final NotFoundException exception = assertThrows(
                 NotFoundException.class,
-                () -> userStorage.getUser("999999"));
+                () -> userStorage.getUser(99999));
         assertEquals("User not found", exception.getMessage());
     }
 
@@ -80,7 +80,7 @@ class FilmorateApplicationTests {
         user1.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.addUser(user1);
         assertThat(userStorage.getUsers()).asList().isNotEmpty().contains(user1);
-        Optional<User> userOptional = Optional.ofNullable(userStorage.getUser(String.valueOf(1)));
+        Optional<User> userOptional = Optional.ofNullable(userStorage.getUser(1));
         assertThat(userOptional)
                 .isPresent()
                 .hasValueSatisfying(user ->
@@ -97,7 +97,7 @@ class FilmorateApplicationTests {
         user1.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.addUser(user1);
         assertThat(userStorage.getUsers()).asList().isNotEmpty().contains(user1);
-        Optional<User> userOptional = Optional.ofNullable(userStorage.getUser(String.valueOf(1)));
+        Optional<User> userOptional = Optional.ofNullable(userStorage.getUser(1));
         assertThat(userOptional)
                 .isPresent()
                 .hasValueSatisfying(user ->
@@ -111,7 +111,7 @@ class FilmorateApplicationTests {
         user2.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.updateUser(user2);
         assertThat(userStorage.getUsers()).asList().isNotEmpty().contains(user2);
-        Optional<User> userOptional2 = Optional.ofNullable(userStorage.getUser(String.valueOf(10)));
+        Optional<User> userOptional2 = Optional.ofNullable(userStorage.getUser(10));
         assertThat(userOptional2)
                 .isPresent()
                 .hasValueSatisfying(user ->
@@ -133,9 +133,9 @@ class FilmorateApplicationTests {
         user2.setEmail("email@");
         user2.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.addUser(user2);
-        assertThat(userStorage.getUser("1").getFriendsId().isEmpty());
-        userStorage.addFriend("1", "2");
-        assertThat(userStorage.getUser("1").getFriendsId().contains(2));
+        assertThat(userStorage.getUser(1).getFriendsId().isEmpty());
+        userStorage.addFriend(1, 2);
+        assertThat(userStorage.getUser(1).getFriendsId().contains(2));
     }
 
     @Test
@@ -152,11 +152,11 @@ class FilmorateApplicationTests {
         user2.setEmail("email@");
         user2.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.addUser(user2);
-        assertThat(userStorage.getUser("1").getFriendsId().isEmpty());
-        userStorage.addFriend("1", "2");
-        assertThat(userStorage.getUser("1").getFriendsId().contains(2));
-        userStorage.deleteFriend("1", "2");
-        assertThat(userStorage.getUser("1").getFriendsId().isEmpty());
+        assertThat(userStorage.getUser(1).getFriendsId().isEmpty());
+        userStorage.addFriend(1, 2);
+        assertThat(userStorage.getUser(1).getFriendsId().contains(2));
+        userStorage.deleteFriend(1, 2);
+        assertThat(userStorage.getUser(1).getFriendsId().isEmpty());
     }
 
     @Test
@@ -173,10 +173,10 @@ class FilmorateApplicationTests {
         user2.setEmail("email@");
         user2.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.addUser(user2);
-        assertThat(userStorage.getUser("1").getFriendsId().isEmpty());
-        userStorage.addFriend("1", "2");
-        assertThat(userStorage.getUser("1").getFriendsId().contains(2));
-        assertThat(userStorage.getFriends("1").contains(user2));
+        assertThat(userStorage.getUser(1).getFriendsId().isEmpty());
+        userStorage.addFriend(1, 2);
+        assertThat(userStorage.getUser(1).getFriendsId().contains(2));
+        assertThat(userStorage.getFriends(1).contains(user2));
     }
 
     @Test
@@ -193,18 +193,18 @@ class FilmorateApplicationTests {
         user2.setEmail("email@");
         user2.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.addUser(user2);
-        assertThat(userStorage.getUser("1").getFriendsId().isEmpty());
-        userStorage.addFriend("1", "2");
-        assertThat(userStorage.getUser("1").getFriendsId().contains(2));
-        assertThat(userStorage.getFriends("1").contains(user2));
+        assertThat(userStorage.getUser(1).getFriendsId().isEmpty());
+        userStorage.addFriend(1, 2);
+        assertThat(userStorage.getUser(1).getFriendsId().contains(2));
+        assertThat(userStorage.getFriends(1).contains(user2));
         User user3 = new User();
         user3.setName("name");
         user3.setLogin("Login3");
         user3.setEmail("email@");
         user3.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.addUser(user3);
-        userStorage.addFriend("3", "2");
-        assertThat(userStorage.getCommonFriends("1", "3").contains(user2));
+        userStorage.addFriend(3, 2);
+        assertThat(userStorage.getCommonFriends(1, 3).contains(user2));
     }
 
     @Test
@@ -217,7 +217,7 @@ class FilmorateApplicationTests {
         film.setMpa(new Mpa(1, "PG"));
         filmStorage.addFilm(film);
 
-        Optional<Film> filmOptional = Optional.ofNullable(filmStorage.getFilm(String.valueOf(1)));
+        Optional<Film> filmOptional = Optional.ofNullable(filmStorage.getFilm(1));
         assertThat(filmOptional)
                 .isPresent()
                 .hasValueSatisfying(user ->
@@ -226,7 +226,7 @@ class FilmorateApplicationTests {
 
         final NotFoundException exception = assertThrows(
                 NotFoundException.class,
-                () -> filmStorage.getFilm("999999"));
+                () -> filmStorage.getFilm(999999));
         assertEquals("Такого фильма нет", exception.getMessage());
     }
 
@@ -294,15 +294,15 @@ class FilmorateApplicationTests {
         film.setMpa(new Mpa(1, "G"));
         filmStorage.addFilm(film);
         assertThat(filmStorage.getAllFilms()).asList().isNotEmpty().contains(film);
-        assertThat(filmStorage.getFilm("1").getLikes()).isEqualTo(2);
+        assertThat(filmStorage.getFilm(1).getLikes()).isEqualTo(2);
         User user1 = new User();
         user1.setName("name");
         user1.setLogin("Login");
         user1.setEmail("email@");
         user1.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.addUser(user1);
-        filmStorage.addLike("1", "3");
-        assertThat(filmStorage.getFilm("1").getLikes()).isEqualTo(3);
+        filmStorage.addLike(1, 3);
+        assertThat(filmStorage.getFilm(1).getLikes()).isEqualTo(3);
     }
 
     @Test
@@ -315,11 +315,11 @@ class FilmorateApplicationTests {
         film.setMpa(new Mpa(1, "G"));
         filmStorage.addFilm(film);
         assertThat(filmStorage.getAllFilms()).asList().isNotEmpty().contains(film);
-        assertThat(filmStorage.getFilm("8").getLikes()).isEqualTo(0);
-        filmStorage.addLike("8", "1");
-        assertThat(filmStorage.getFilm("8").getLikes()).isEqualTo(1);
-        filmStorage.removeLike("1", "8");
-        assertThat(filmStorage.getFilm("8").getLikes()).isEqualTo(0);
+        assertThat(filmStorage.getFilm(8).getLikes()).isEqualTo(0);
+        filmStorage.addLike(8, 1);
+        assertThat(filmStorage.getFilm(8).getLikes()).isEqualTo(1);
+        filmStorage.removeLike(1, 8);
+        assertThat(filmStorage.getFilm(8).getLikes()).isEqualTo(0);
     }
 
     @Test
@@ -362,21 +362,21 @@ class FilmorateApplicationTests {
         user2.setBirthday(LocalDate.of(2000, 12, 27));
         userStorage.addUser(user2);
 
-        filmStorage.addLike("1", "1");
-        filmStorage.addLike("1", "2");
-        filmStorage.addLike("3", "1");
+        filmStorage.addLike(1, 1);
+        filmStorage.addLike(1, 2);
+        filmStorage.addLike(3, 1);
         film.setLikes(2);
         film2.setLikes(1);
-        assertThat(filmStorage.getPopularFilms("10")).asList().isNotEmpty().containsExactly(film, film2, film1);
+        assertThat(filmStorage.getPopularFilms(10)).asList().isNotEmpty().containsExactly(film, film2, film1);
     }
 
     @Test
     public void testGetGenre() throws NotFoundException {
         Genre genre = new Genre(1, "Комедия");
-        assertThat(filmStorage.getGenre("1")).isEqualTo(genre);
+        assertThat(filmStorage.getGenre(1)).isEqualTo(genre);
         final NotFoundException exception = assertThrows(
                 NotFoundException.class,
-                () -> filmStorage.getGenre("999999"));
+                () -> filmStorage.getGenre(9999999));
         assertEquals("Жанр не найден", exception.getMessage());
     }
 
@@ -388,10 +388,10 @@ class FilmorateApplicationTests {
     @Test
     public void testGetRating() throws NotFoundException {
         Mpa mpa = new Mpa(1, "G");
-        assertThat(filmStorage.getRating("1")).isEqualTo(mpa);
+        assertThat(filmStorage.getRating(1)).isEqualTo(mpa);
         final NotFoundException exception = assertThrows(
                 NotFoundException.class,
-                () -> filmStorage.getRating("999999"));
+                () -> filmStorage.getRating(999999999));
         assertEquals("Рейтинг не найден", exception.getMessage());
     }
 

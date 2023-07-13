@@ -13,15 +13,15 @@ public interface UserStorage {
 
     User updateUser(User user) throws ValidationException, NotFoundException;
 
-    User getUser(String id) throws NotFoundException, ValidationException;
+    User getUser(int id) throws NotFoundException, ValidationException;
 
-    String addFriend(String id, String friendId) throws ValidationException, NotFoundException;
+    String addFriend(int id, int friendId) throws ValidationException, NotFoundException;
 
-    String deleteFriend(String id, String friendId) throws ValidationException, NotFoundException;
+    String deleteFriend(int id, int friendId) throws ValidationException, NotFoundException;
 
-    List<User> getFriends(String id) throws ValidationException, NotFoundException;
+    List<User> getFriends(int id) throws ValidationException, NotFoundException;
 
-    List<User> getCommonFriends(String id, String friendId) throws ValidationException, NotFoundException;
+    List<User> getCommonFriends(int id, int friendId) throws ValidationException, NotFoundException;
 
 
 }

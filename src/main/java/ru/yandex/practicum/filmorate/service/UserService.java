@@ -26,7 +26,7 @@ public class UserService {
         return userStorage.getUsers();
     }
 
-    public User getUser(String id) throws NotFoundException, ValidationException {
+    public User getUser(int id) throws NotFoundException, ValidationException {
         return userStorage.getUser(id);
     }
 
@@ -38,19 +38,19 @@ public class UserService {
         return userStorage.updateUser(user);
     }
 
-    public String addFriend(String id, String friendId) throws ValidationException, NotFoundException {
+    public String addFriend(int id, int friendId) throws ValidationException, NotFoundException {
         return userStorage.addFriend(id, friendId);
     }
 
-    public String deleteFriend(String id, String friendId) throws ValidationException, NotFoundException {
+    public String deleteFriend(int id, int friendId) throws ValidationException, NotFoundException {
         return userStorage.deleteFriend(id, friendId);
     }
 
-    public List<User> getFriends(String id) throws ValidationException, NotFoundException {
+    public List<User> getFriends(int id) throws ValidationException, NotFoundException {
         return userStorage.getFriends(id);
     }
 
-    public List<User> getCommonFriends(String id, String friendId) throws ValidationException, NotFoundException {
+    public List<User> getCommonFriends(int id, int friendId) throws ValidationException, NotFoundException {
         return userStorage.getCommonFriends(id, friendId);
     }
 

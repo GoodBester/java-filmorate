@@ -15,7 +15,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.service.ValidationUtils;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.*;
@@ -40,14 +39,14 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.rating_id rating_id," +
-                " r.NAME rating_name, COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id genre_id FROM FILM as f " +
-                "LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID" +
-                " LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID" +
-                "  GROUP BY f.id, g.NAME, g.id ORDER BY f.ID";
+        String select = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.rating_id rating_id," +
+                " r.NAME rating_name, COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id genre_id FROM FILM as f ";
+        String joinRating = "LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID" ;
+        String joinFilmGenre = " LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID ";
+        String condition = "GROUP BY f.id, g.NAME, g.id ORDER BY f.ID";
         List<Film> f;
         try {
-            f = jdbcTemplate.queryForObject(sql, allFilmRowMapper());
+            f = jdbcTemplate.queryForObject(select + joinRating + joinFilmGenre + condition, allFilmRowMapper());
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
@@ -56,15 +55,15 @@ public class FilmDbStorage implements FilmStorage {
 
 
     @Override
-    public Film getFilm(String id) throws NotFoundException {
-        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.RATING_ID rating_id, r.NAME rating_name," +
-                " COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id genre_id FROM FILM as f " +
-                "LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID" +
-                " LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID" +
-                " where f.id = ? GROUP BY f.id, g.NAME ORDER BY genre_id;";
+    public Film getFilm(int id) throws NotFoundException {
+        String select = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.RATING_ID rating_id, r.NAME rating_name," +
+                " COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id genre_id FROM FILM as f ";
+        String joinRating = "LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID ";
+        String joinFilmGenre = "LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID ";
+        String condition = "WHERE f.id = ? GROUP BY f.id, g.NAME ORDER BY genre_id;";
         Film f;
         try {
-            f = jdbcTemplate.queryForObject(sql, filmRowMapper(), ValidationUtils.checkId(id));
+            f = jdbcTemplate.queryForObject(select + joinRating + joinFilmGenre + condition, filmRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Такого фильма нет");
         }
@@ -93,34 +92,34 @@ public class FilmDbStorage implements FilmStorage {
 
 
     @Override
-    public List<Film> getPopularFilms(String count) {
-        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, r.ID rating_id, r.NAME rating_name," +
-                " COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id genre_id FROM FILM as f " +
-                "LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID" +
-                " LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID" +
-                "  GROUP BY f.id, g.NAME, g.id ORDER BY likes DESC LIMIT ?";
+    public List<Film> getPopularFilms(int count) {
+        String select = "SELECT f.id, f.name, f.description, f.release_date, f.duration, r.ID rating_id, r.NAME rating_name," +
+                " COUNT(fl.USER_ID) likes, g.NAME genre_name, g.id genre_id FROM FILM as f ";
+        String joinRating = "LEFT JOIN RATING r ON f.RATING_ID = r.ID LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID ";
+        String joinFilmGenre = "LEFT JOIN FILM_GENRE fg ON f.ID = fg.FILM_ID left JOIN GENRE g ON fg.GENRE_ID = g.ID ";
+        String condition = "GROUP BY f.id, g.NAME, g.id ORDER BY likes DESC LIMIT ?;";
         List<Film> f;
         try {
-            f = jdbcTemplate.queryForObject(sql, allFilmRowMapper(), ValidationUtils.checkId(count));
-        } catch (EmptyResultDataAccessException | NullPointerException | NotFoundException e) {
+            f = jdbcTemplate.queryForObject(select + joinRating + joinFilmGenre + condition, allFilmRowMapper(), count);
+        } catch (EmptyResultDataAccessException | NullPointerException e) {
             return List.of();
         }
-        return Objects.requireNonNull(f).stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        return f.stream().sorted(Comparator.comparingInt(Film::getLikes).reversed()).collect(Collectors.toList());
     }
 
     @Override
-    public String addLike(String filmId, String id) throws NotFoundException, ValidationException {
+    public String addLike(int filmId, int id) throws NotFoundException, ValidationException {
         getFilm(filmId);
         userService.getUser(id);
-        jdbcTemplate.update("INSERT INTO FILM_LIKES (film_id, user_id) VALUES (?,?);", ValidationUtils.checkId(filmId), ValidationUtils.checkId(id));
+        jdbcTemplate.update("INSERT INTO FILM_LIKES (film_id, user_id) VALUES (?,?);", filmId, id);
         return "Like added";
     }
 
     @Override
-    public String removeLike(String id, String filmId) throws ValidationException, NotFoundException {
+    public String removeLike(int id, int filmId) throws ValidationException, NotFoundException {
         userService.getUser(id);
         getFilm(filmId);
-        jdbcTemplate.update("DELETE FROM FILM_LIKES WHERE film_id=? AND user_id=?;", ValidationUtils.checkId(filmId), ValidationUtils.checkId(id));
+        jdbcTemplate.update("DELETE FROM FILM_LIKES WHERE film_id=? AND user_id=?;", filmId, id);
         return "Like removed";
     }
 
@@ -140,7 +139,7 @@ public class FilmDbStorage implements FilmStorage {
         for (Integer g : film.getGenres().stream().map(Genre::getId).distinct().collect(Collectors.toList())) {
             jdbcTemplate.update("INSERT INTO film_genre (film_id, genre_id) VALUES (?,?);", film.getId(), g);
         }
-        return getFilm(String.valueOf(film.getId()));
+        return getFilm(film.getId());
     }
 
 
@@ -209,18 +208,20 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Genre getGenre(String id) throws NotFoundException {
+    public Genre getGenre(int id) throws NotFoundException {
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM genre WHERE id =?", ((rs, rowNum) -> new Genre(rs.getInt("id"), rs.getString("name"))), ValidationUtils.checkId(id));
+            return jdbcTemplate.queryForObject("SELECT * FROM genre WHERE id =?", ((rs, rowNum) ->
+                    new Genre(rs.getInt("id"), rs.getString("name"))), id);
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Жанр не найден");
         }
     }
 
     @Override
-    public Mpa getRating(String id) throws NotFoundException {
+    public Mpa getRating(int id) throws NotFoundException {
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM rating WHERE id =?", ((rs, rowNum) -> new Mpa(rs.getInt("id"), rs.getString("name"))), ValidationUtils.checkId(id));
+            return jdbcTemplate.queryForObject("SELECT * FROM rating WHERE id =?", ((rs, rowNum) ->
+                    new Mpa(rs.getInt("id"), rs.getString("name"))), id);
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Рейтинг не найден");
         }

@@ -27,7 +27,7 @@ public class RatingController {
     }
 
     @GetMapping("/{id}")
-    public Mpa getRating(@PathVariable String id) throws NotFoundException {
+    public Mpa getRating(@PathVariable int id) throws NotFoundException {
         return filmService.getRating(id);
     }
 }

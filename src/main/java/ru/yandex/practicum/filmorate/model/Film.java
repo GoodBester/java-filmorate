@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Data
-public class Film implements Comparable<Film> {
+public class Film {
     private int id;
     private String name;
     private int likes;
@@ -16,8 +16,4 @@ public class Film implements Comparable<Film> {
     private List<Genre> genres = new ArrayList<>();
     private Mpa mpa;
 
-    @Override
-    public int compareTo(Film o) {
-        return this.getLikes() - o.getLikes();
-    }
 }

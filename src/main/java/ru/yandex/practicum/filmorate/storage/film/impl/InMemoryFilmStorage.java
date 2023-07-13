@@ -38,8 +38,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilm(String id) throws NotFoundException {
-        return Optional.ofNullable(films.get(checkId(id))).orElseThrow(() -> new NotFoundException("Такого фильма нет"));
+    public Film getFilm(int id) throws NotFoundException {
+        return Optional.ofNullable(films.get(id)).orElseThrow(() -> new NotFoundException("Такого фильма нет"));
     }
 
 
@@ -54,7 +54,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film updateFilm(@RequestBody @Valid Film film) throws ValidationException {
+    public Film updateFilm(Film film) throws ValidationException {
         if (checkValid(film)) {
             if (films.containsKey(film.getId())) {
                 films.put(film.getId(), film);
@@ -65,7 +65,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         throw new ValidationException("Такого фильма нет в базе");
     }
 
-    public String addLike(String filmId, String id) throws ValidationException, NotFoundException {
+    public String addLike(int filmId, int id) throws ValidationException, NotFoundException {
         User user = checkUser(id, userStorage);
         Film film = checkFilm(filmId, this);
         if (user == null) {
@@ -79,7 +79,7 @@ public class InMemoryFilmStorage implements FilmStorage {
                 user.getName(), film.getName());
     }
 
-    public String removeLike(String id, String filmId) throws ValidationException, NotFoundException {
+    public String removeLike(int id, int filmId) throws ValidationException, NotFoundException {
         User user = checkUser(id, userStorage);
         Film film = checkFilm(filmId, this);
         if (user == null) {
@@ -104,25 +104,24 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Genre getGenre(String id) {
+    public Genre getGenre(int id) {
         return null;
     }
 
     @Override
-    public Mpa getRating(String id) {
+    public Mpa getRating(int id) {
         return null;
     }
 
     @Override
-    public List<Film> getPopularFilms(String count) throws NotFoundException {
-        int number = checkId(count);
+    public List<Film> getPopularFilms(int count) {
         Map<Integer, Integer> likesFilms = new HashMap<>();
         for (Film film : films.values()) {
             likesFilms.put(film.getId(), film.getLikes());
         }
         List<Film> popularFilms = new ArrayList<>();
         likesFilms.entrySet().stream().sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
-                .limit(number).forEach(entry -> popularFilms.add(this.getFilms().get(entry.getKey())));
+                .limit(count).forEach(entry -> popularFilms.add(this.getFilms().get(entry.getKey())));
 
         return popularFilms;
     }

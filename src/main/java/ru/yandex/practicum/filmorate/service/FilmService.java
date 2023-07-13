@@ -27,7 +27,7 @@ public class FilmService {
         return filmStorage.getAllFilms();
     }
 
-    public Film getFilm(String id) throws NotFoundException {
+    public Film getFilm(int id) throws NotFoundException {
         return filmStorage.getFilm(id);
     }
 
@@ -39,15 +39,15 @@ public class FilmService {
         return filmStorage.updateFilm(film);
     }
 
-    public String addLike(String filmId, String id) throws ValidationException, NotFoundException {
+    public String addLike(int filmId, int id) throws ValidationException, NotFoundException {
         return filmStorage.addLike(filmId, id);
     }
 
-    public String removeLike(String id, String filmId) throws ValidationException, NotFoundException {
+    public String removeLike(int id, int filmId) throws ValidationException, NotFoundException {
         return filmStorage.removeLike(id, filmId);
     }
 
-    public List<Film> getPopularFilms(String count) throws NotFoundException {
+    public List<Film> getPopularFilms(int count) throws NotFoundException {
         return filmStorage.getPopularFilms(count);
     }
 
@@ -59,11 +59,11 @@ public class FilmService {
         return filmStorage.getAllGenres();
     }
 
-    public Genre getGenre(String id) throws NotFoundException {
+    public Genre getGenre(int id) throws NotFoundException {
         return filmStorage.getGenre(id);
     }
 
-    public Mpa getRating(String id) throws NotFoundException {
+    public Mpa getRating(int id) throws NotFoundException {
         return filmStorage.getRating(id);
     }
 }
