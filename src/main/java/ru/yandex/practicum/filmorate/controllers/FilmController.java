@@ -23,38 +23,39 @@ public class FilmController {
 
 
     @GetMapping
-    public List<Film> getFilms() {
-        return filmService.getFilms();
+    public List<Film> getAllFilms() throws NotFoundException {
+        return filmService.getAllFilms();
     }
 
     @GetMapping("/{id}")
-    public Film getFilm(@PathVariable String id) throws NotFoundException {
+    public Film getFilm(@PathVariable int id) throws NotFoundException {
         return filmService.getFilm(id);
     }
 
 
     @PostMapping
-    public Film addFilm(@RequestBody @Valid Film film) throws ValidationException {
+    public Film addFilm(@RequestBody @Valid Film film) throws ValidationException, NotFoundException {
         return filmService.addFilm(film);
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody @Valid Film film) throws ValidationException {
+    public Film updateFilm(@RequestBody @Valid Film film) throws ValidationException, NotFoundException {
         return filmService.updateFilm(film);
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public String addLike(@PathVariable String id, @PathVariable String userId) throws ValidationException, NotFoundException {
+    public String addLike(@PathVariable int id, @PathVariable int userId) throws ValidationException, NotFoundException {
         return filmService.addLike(id, userId);
     }
 
+
     @DeleteMapping("/{id}/like/{userId}")
-    public String removeLike(@PathVariable String id, @PathVariable String userId) throws ValidationException, NotFoundException {
+    public String removeLike(@PathVariable int id, @PathVariable int userId) throws ValidationException, NotFoundException {
         return filmService.removeLike(id, userId);
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") String count) {
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) throws NotFoundException {
         return filmService.getPopularFilms(count);
     }
 }
